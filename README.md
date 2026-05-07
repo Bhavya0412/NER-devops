@@ -267,7 +267,8 @@ The container mounts the host's Docker socket, letting it run \`docker compose\`
 
 ## Author
 
-**Bhavya Shah** — [@Bhavya0412](https://github.com/Bhavya0412)
+**Bhavya Shah** 
+**Ansh Savarkar**
 
 ---
 
