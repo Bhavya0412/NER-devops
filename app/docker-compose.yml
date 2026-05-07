@@ -1,0 +1,49 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: ner-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  ai-service:
+    build:
+      context: ./ai-service
+    container_name: ner-ai-service
+    env_file:
+      - ./ai-service/.env
+    ports:
+      - "8000:8000"
+
+  server:
+    build:
+      context: ./server
+    container_name: ner-server
+    env_file:
+      - ./server/.env
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/ner_app
+      - AI_SERVICE_URL=http://ai-service:8000
+      - CLIENT_ORIGIN=http://localhost:5173
+    ports:
+      - "5050:5050"
+    depends_on:
+      - mongo
+      - ai-service
+
+  client:
+    build:
+      context: ./client
+    container_name: ner-client
+    env_file:
+      - ./client/.env
+    environment:
+      - VITE_API_URL=http://localhost:5050
+    ports:
+      - "5173:5173"
+    depends_on:
+      - server
+
+volumes:
+  mongo_data:
